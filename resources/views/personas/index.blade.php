@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,8 +23,31 @@
     
         <div class="col">
 
-            <div class="row">
-                <div class="col text-right">
+            @if( session()->has('info'))
+                <div class="row">
+                    <div class="col">
+                        <div class="alert alert-success" role="alert">
+                            {{ session('info') }}
+                        </div>    
+                    </div>    
+                </div>
+            @endif
+
+            <div class="row mt-3 mb-3">
+
+                <div class="col-xs-12 col-md-6">
+                    <form id="form-buscar-persona" class=" " action=" ">
+                      <div class="input-group input-group-built-in">
+                        <input type="text" class="form-control" placeholder="Buscar" placeholder="Buscar" autofocus name="buscar" value="{{request()->query('buscar')}}">
+
+                        <span class="input-group-btn">
+                            <button type="submit" class="btn btn-outline-info">Buscar</button>
+                        </span>
+                      </div>
+                    </form>    
+                </div>
+
+                <div class="col-md-6 text-right">
                     <a href="/personas/create" class="btn btn-outline-success">Crear</a>
                 </div>
             </div>
@@ -52,10 +75,24 @@
                             <td>{{ $persona->dni }}</td>
                             <td>{{ $persona->correo }}</td>
                             <td>{{ $persona->celular }}</td>
-                            <td>Editar</td>
-                            <td>Eliminar</td>
+                            
+                            <td>
+                                <a class="text-info" href="{{ route('personas.edit', $persona->id ) }}" title="Editar">
+                                    Editar
+                                </a>
+                            </td>
+
+                            <td>
+                                <form id="personas.eliminar.{{$persona->id}}" action="{{ route('personas.destroy', $persona->id) }}" method="POST">
+                                {!! method_field('DELETE') !!}
+                                {!! csrf_field() !!}
+                                <a class="text-danger" href="#" onclick="event.preventDefault(); document.getElementById('personas.eliminar.{{$persona->id}}').submit();">Eliminar<a/>
+                                </form>
+                            </td>
+
                         </tr>
                         @endforeach
+
                     </tbody>
                 </table>
 
