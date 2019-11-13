@@ -16,7 +16,7 @@
 
     <div class="row">
         <div class="col">
-            <h3>Editar Persona</h3>
+            <h3>Agregar Persona</h3>
         </div>
     </div>
     <div class="row">
@@ -24,7 +24,9 @@
         <div class="col-sm-12">
 
             <form action="{{ route('personas.update', $persona->id) }}" method="POST">
-
+                
+                {!! method_field('PUT') !!}
+                {!! csrf_field() !!}
                 <div class="form-row">
                     <div class="form-group col-md-6">
                         <label for="dni">DNI</label>
@@ -85,32 +87,29 @@
                         Sexo    <br>
                         <br>
                         <label>
-                            <input type="radio" name="sexo" value="M"
-                            @if( $persona->sexo == "M" )
-                                checked
-                            @endif
-                            > 
-                            Masculino
+                            <input type="radio" name="sexo" value="M" 
+                                @if ($persona->sexo == "M")
+                                    checked
+                                @endif 
+                            > Masculino
                         </label>
                         <label>
                             <input type="radio" name="sexo" value="F"
-                            @if( $persona->sexo == "F" )
-                                checked
-                            @endif
-                            > 
-                            Femenino
+                                @if ($persona->sexo == "F")
+                                    checked
+                                @endif
+                            > Femenino
                         </label>
 
                         <div class="text-danger">{{ $errors->first('sexo') }}</div>
                     </div>
                 </div>
                 
-                {!! method_field('PUT') !!}
+
                 
-                {!! csrf_field() !!}
 
 
-                <button type="submit" class="btn btn-info">Actualizar</button>
+                <button type="submit" class="btn btn-info">Guardar</button>
                 
                 {{-- @if ($errors->any())
                     <br>

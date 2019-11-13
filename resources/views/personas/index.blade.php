@@ -77,17 +77,37 @@
                             <td>{{ $persona->celular }}</td>
                             
                             <td>
-                                <a class="text-info" href="{{ route('personas.edit', $persona->id ) }}" title="Editar">
+                                <a href="{{ route('personas.edit', $persona->id ) }}" >
                                     Editar
                                 </a>
                             </td>
 
                             <td>
-                                <form id="personas.eliminar.{{$persona->id}}" action="{{ route('personas.destroy', $persona->id) }}" method="POST">
-                                {!! method_field('DELETE') !!}
-                                {!! csrf_field() !!}
-                                <a class="text-danger" href="#" onclick="event.preventDefault(); document.getElementById('personas.eliminar.{{$persona->id}}').submit();">Eliminar<a/>
+
+
+                                <form 
+                                id="personas.eliminar.{{$persona->id}}" 
+                                action="{{ route('personas.destroy', $persona->id) }}" 
+                                method="POST"
+                                >
+
+                                    {!! method_field('DELETE') !!}
+
+                                    {!! csrf_field() !!}
+
+                                    <a 
+                                    href="#" 
+                                    onclick="
+                                            event.preventDefault(); 
+                                            document.getElementById('personas.eliminar.{{$persona->id}}').submit();
+                                    ">
+                                        Eliminar
+                                    <a/>
+
                                 </form>
+
+
+
                             </td>
 
                         </tr>
