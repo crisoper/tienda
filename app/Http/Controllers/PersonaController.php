@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Persona;
 
+
 use Illuminate\Http\Request;
 
 use App\Http\Requests\PersonaCrearRequest;
 use App\Http\Requests\PersonaActualizarRequest;
+
 
 class PersonaController extends Controller
 {
@@ -69,7 +71,9 @@ class PersonaController extends Controller
         
         $persona->save();
 
-        return redirect()->route('personas.index');
+        return redirect()
+                ->route('personas.index')
+                ->with('info', 'Datos registrados correctamente');
     }
 
     /**
@@ -91,7 +95,7 @@ class PersonaController extends Controller
      */
     public function edit($id)
     {
-        $persona = Persona::findOrFail($id);
+        $persona = Persona::findOrFail( $id );
         return view("personas.edit", compact("persona"));
     }
 
@@ -104,20 +108,26 @@ class PersonaController extends Controller
      */
     public function update(PersonaActualizarRequest $request, $id)
     {
+
         $persona = Persona::findOrFail($id);
-        $persona->nombre = $request->input("nombre");
-        $persona->paterno = $request->input("paterno");
-        $persona->materno = $request->input("materno");
-        $persona->dni = $request->input("dni");
-        $persona->sexo = $request->input("sexo");
-        $persona->fechanacimiento = $request->input('fechanacimiento');;
-        $persona->correo = $request->input("correo");
-        $persona->direccion = $request->input("direccion");
-        $persona->celular = $request->input("celular");
+        $persona->dni = $request->input('dni');
+        $persona->paterno = $request->input('paterno');
+        $persona->materno = $request->input('materno');
+        $persona->nombre = $request->input('nombre');
+        $persona->sexo = $request->input('sexo');
+        $persona->direccion = $request->input('direccion');
+        $persona->correo = $request->input('correo');
+        $persona->celular = $request->input('celular');
+        $persona->fechanacimiento = $request->input('fechanacimiento');
+
         $persona->save();
 
-        return redirect()->route('personas.index')
-                        ->with('info', 'Datos actualizados correctamente');
+        // return redirect()->route('personas.index');
+
+
+        return redirect()
+                    ->route('personas.index')
+                    ->with('info', 'Datos actualizados correctamente');
 
     }
 
@@ -132,8 +142,11 @@ class PersonaController extends Controller
         $persona = Persona::findOrFail($id);
         $persona->delete(); 
 
-        return redirect()->route('personas.index')
-                        ->with('info', 'Datos actualizados correctamente');
+        // return redirect()->route('personas.index');
+
+        return redirect()
+                    ->route('personas.index')
+                    ->with('info', 'Registro eliminado');
 
     }
 }

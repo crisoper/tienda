@@ -17,4 +17,6 @@ Route::get('/', function () {
 
 Route::resource('personas', 'PersonaController');
 
+
+
 Route::resource('productos', 'ProductoController');
