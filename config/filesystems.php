@@ -48,6 +48,12 @@ return [
             'root' => storage_path('app'),
         ],
 
+        //Nuevo disco en los que se guardaran los archivos
+        'tienda' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/tienda'),
+        ],
+
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),

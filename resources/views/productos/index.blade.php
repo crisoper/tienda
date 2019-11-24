@@ -23,15 +23,7 @@
     
         <div class="col">
 
-            @if( session()->has('info'))
-                <div class="row">
-                    <div class="col">
-                        <div class="alert alert-success" role="alert">
-                            {{ session('info') }}
-                        </div>    
-                    </div>    
-                </div>
-            @endif
+            @include('layouts.info')
 
             <div class="row mt-3 mb-3">
 
@@ -54,45 +46,56 @@
 
             <div class="table-responsive">
 
-                <table class="table table-sm table-striped">
-                    <thead>
-                        <tr>
-                            <th>Nro</th>
-                            <th>Categoria</th>
-                            <th>Nombre</th>
-                            <th>Precio</th>
-                            <th colspan="2">Acciones</th>
-                        </tr>
-                    </thead>
+                @if (count($personas) > 0)
+                    <table class="table table-sm table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nro</th>
+                                <th>Categoria</th>
+                                <th>Nombre</th>
+                                <th>Precio</th>
+                                <th colspan="2">Acciones</th>
+                            </tr>
+                        </thead>
 
-                    <tbody>
+                        <tbody>
 
-                        @foreach( $productos as $pproducto )
-                        <tr>
-                            <td>{{ $loop->iteration }}</td>
-                            <td>{{ $pproducto->categoria->nombre }}</td>
-                            <td>{{ $pproducto->nombre }}</td>
-                            <td>{{ $pproducto->precio }}</td>
-                            
-                            <td>
-                                <a class="text-info" href="{{ route('productos.edit', $pproducto->id ) }}" title="Editar">
-                                    Editar
-                                </a>
-                            </td>
+                            @foreach( $productos as $pproducto )
+                            <tr>
+                                <td>{{ $loop->iteration }}</td>
+                                <td>{{ $pproducto->categoria->nombre }}</td>
+                                <td>{{ $pproducto->nombre }}</td>
+                                <td>{{ $pproducto->precio }}</td>
+                                
+                                <td>
+                                    <a class="text-info" href="{{ route('productos.edit', $pproducto->id ) }}" title="Editar">
+                                        Editar
+                                    </a>
+                                </td>
 
-                            <td>
-                                <form id="productos.eliminar.{{$pproducto->id}}" action="{{ route('productos.destroy', $pproducto->id) }}" method="POST">
-                                {!! method_field('DELETE') !!}
-                                {!! csrf_field() !!}
-                                <a class="text-danger" href="#" onclick="event.preventDefault(); document.getElementById('productos.eliminar.{{$pproducto->id}}').submit();">Eliminar<a/>
-                                </form>
-                            </td>
+                                <td>
+                                    <form id="productos.eliminar.{{$pproducto->id}}" action="{{ route('productos.destroy', $pproducto->id) }}" method="POST">
+                                    {!! method_field('DELETE') !!}
+                                    {!! csrf_field() !!}
+                                    <a class="text-danger" href="#" onclick="event.preventDefault(); document.getElementById('productos.eliminar.{{$pproducto->id}}').submit();">Eliminar<a/>
+                                    </form>
+                                </td>
 
-                        </tr>
-                        @endforeach
+                            </tr>
+                            @endforeach
 
-                    </tbody>
-                </table>
+                        </tbody>
+                    </table>    
+
+                @else
+                    <div class="row">
+                        <div class="col">
+                            No se han encontrador resultados
+                        </div>
+                    </div>
+                @endif
+
+                
 
             </div>
 

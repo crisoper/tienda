@@ -10,9 +10,20 @@ use Illuminate\Http\Request;
 use App\Http\Requests\PersonaCrearRequest;
 use App\Http\Requests\PersonaActualizarRequest;
 
+use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\DB;
+
 
 class PersonaController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth')->only(['create', 'store', 'edit', 'update', 'destroy']);
+    }
+
+
     /**
      * Display a listing of the resource.
      *
@@ -20,21 +31,22 @@ class PersonaController extends Controller
      */
     public function index()
     {
+        
         if (!empty(request()->buscar)) 
         {
             $personas = Persona::where('nombre', 'like', '%'.request()->buscar.'%')
                             ->orWhere('paterno', 'like', '%'.request()->buscar.'%')
                             ->orWhere('materno', 'like', '%'.request()->buscar.'%')
                             ->orWhere('dni', '=', request()->buscar)
-                            ->orderBy( 'created_at', request('sorted', 'DESC') )
-                            ->get();
+                            ->orderBy( request('sort', 'id'), 'ASC' )
+                            ->paginate(10);
 
             return view('personas.index', compact('personas') );
         }
         else
         {
-            $personas = Persona::orderBy( 'created_at', request('sorted', 'DESC') )
-                            ->get();
+            $personas = Persona::orderBy( request('sort', 'id'), 'ASC' )
+                            ->paginate(10);
                             
             return view('personas.index', compact('personas') );
         }
@@ -84,7 +96,8 @@ class PersonaController extends Controller
      */
     public function show($id)
     {
-        //
+        $persona = Persona::findOrFail( $id );        
+        return view("personas.show", compact("persona"));
     }
 
     /**
@@ -97,6 +110,31 @@ class PersonaController extends Controller
     {
         $persona = Persona::findOrFail( $id );
         return view("personas.edit", compact("persona"));
+    }
+    
+    public function subirfoto($id)
+    {
+        $persona = Persona::findOrFail( $id );        
+        return view("personas.subirfoto", compact("persona"));
+    }
+    
+    public function storesubirfoto(Request $request, $id)
+    {
+        $persona = Persona::findOrFail( $id );
+
+        $foto = $request->file('foto');
+        
+        $nombre = $foto->getClientOriginalName(); //Obtiene el nombre origial del archivo
+        $extension = $foto->getClientOriginalExtension();  //Obtiene extension del archivo
+        //Generando un nombre unico para guardar
+        $nommbrefoto = date('YmdHis')."." . strtolower( $extension );
+        //Guardando datos en el disco tienda
+        \Storage::disk('tienda')->put($nommbrefoto,  \File::get($foto));
+        
+        $persona->foto = $nommbrefoto;
+        $persona->save();
+
+        return redirect()->route('personas.index')->with('info', 'Datos actualizados');
     }
 
     /**
@@ -149,4 +187,55 @@ class PersonaController extends Controller
                     ->with('info', 'Registro eliminado');
 
     }
+
+
+
+    public function dbraw() {
+        $dni = '44641743';
+        $buscar = 'A';
+        $personas = DB::select("SELECT * FROM personas WHERE dni = ? OR paterno LIKE '%?%' ", [$dni, $buscar]);
+        return $personas;
+    } 
+
+
+    public function dbinsert() {
+        $nombre = "Nueva Categoria".rand(1, 12500);
+        $descripcion = "Descripcion de la categoria";
+        $categoria = DB::insert("INSERT INTO categorias (nombre, descripcion) values (?, ?)", [$nombre, $descripcion]);
+        
+        if ( $categoria ) {
+            return "Se ha registrrado la categoria";
+        }
+        else {
+            return "No se registraron los datos";
+        }
+    } 
+
+
+    public function dbupdate() {
+        $id = 6;
+        $nombre = 'Nuevo nombre de categoria';
+        $categoria = DB::update("UPDATE categorias SET nombre = ? WHERE id = ?", [$nombre, $id]);
+        
+        if ( $categoria ) {
+            return "Se actualizo la categoria";
+        }
+        else {
+            return "No actualizo el registro";
+        }
+    } 
+
+
+    public function dbdelete() {
+        $id = 4;
+        $categoria = DB::delete("DELETE FROM categorias WHERE id = ?", [$id]);
+        
+        if ( $categoria ) {
+            return "Se ha eliminado la categoria";
+        }
+        else {
+            return "No se ha eliminado el registro";
+        }
+    } 
+
 }

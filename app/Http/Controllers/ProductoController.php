@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 
 class ProductoController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth', ['except' => ['index']]);
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -116,6 +122,8 @@ class ProductoController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $producto = Producto::findOrFail($id);
+        $producto->delete();
+        return redirect()->route('productos.index')->with('info', 'Registro eliminado');
     }
 }
