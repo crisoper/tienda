@@ -19,7 +19,33 @@
     </div>
 
     <div class="col-md-6 text-right">
-        <a href="/personas/create" class="btn btn-outline-success">Crear</a>
+
+        <a 
+            class="btn btn-outline-info" 
+            href="#" onclick="event.preventDefault(); 
+            document.getElementById('form.personas.exportar').submit();"
+        >
+            <form id="form.personas.exportar" action="{{ route('personas.exportar') }}" method="POST">
+                {!! csrf_field() !!}
+                <input type="hidden" name="buscar_exportar" value="{{ request()->query('buscar') }}">
+            </form>
+        Exportar
+        <a/>
+
+        <a 
+            class="btn btn-outline-info" 
+            href="#" onclick="event.preventDefault(); 
+            document.getElementById('form.personas.imprimir').submit();"
+        >
+            <form id="form.personas.imprimir" action="{{ route('personas.imprimir') }}" method="POST">
+                {!! csrf_field() !!}
+                <input type="hidden" name="buscar_exportar" value="{{ request()->query('buscar') }}">
+            </form>
+        Imprimir
+        <a/>
+
+
+        <a href="{{ route('personas.create') }}" class="btn btn-outline-success">Crear</a>
     </div>
 
 </div>

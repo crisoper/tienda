@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Persona;
 
-
 use Illuminate\Http\Request;
 
 use App\Http\Requests\PersonaCrearRequest;
@@ -13,6 +12,10 @@ use App\Http\Requests\PersonaActualizarRequest;
 use Illuminate\Support\Facades\Log;
 
 use Illuminate\Support\Facades\DB;
+
+//Trabajar con clases de excel
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class PersonaController extends Controller
@@ -237,5 +240,80 @@ class PersonaController extends Controller
             return "No se ha eliminado el registro";
         }
     } 
+
+    public function exportar() 
+    {
+        $buscar = request('buscar_exportar', null);
+        if( $buscar != null ) 
+        {
+            $personas = Persona::where('nombre', 'like', '%'.$buscar.'%')
+                            ->orWhere('paterno', 'like', '%'.$buscar.'%')
+                            ->orWhere('materno', 'like', '%'.$buscar.'%')
+                            ->orWhere('dni', '=', request()->$buscar)
+                            ->get();
+        }
+        else
+        {
+            $personas = Persona::get();
+        }
+
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        
+        $contador = 0;        
+        $contador++;
+        $sheet->setCellValue('A'.$contador, 'Nro' );
+        $sheet->setCellValue('B'.$contador, 'DNI' );
+        $sheet->setCellValue('C'.$contador, 'PATERNO' );
+        $sheet->setCellValue('D'.$contador, 'MATERNO' );
+        $sheet->setCellValue('E'.$contador, 'NOMBREE' );
+
+        foreach($personas as $persona) {
+            $contador++;
+            $sheet->setCellValue('A'.$contador, $contador - 1 );
+            $sheet->setCellValue('B'.$contador, $persona->dni );
+            $sheet->setCellValue('C'.$contador, $persona->paterno );
+            $sheet->setCellValue('D'.$contador, $persona->materno );
+            $sheet->setCellValue('E'.$contador, $persona->nombre );
+        }
+
+        $writer = new Xlsx($spreadsheet);
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Content-Disposition: attachment;filename="'.date('YmdHis').'.xlsx"');
+        header('Cache-Control: max-age=0');
+        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
+        header('Cache-Control: cache, must-revalidate');
+        
+        $writer->save('php://output');
+        exit();
+    }
+
+
+
+    public function imprimirpdf() {
+
+        $buscar = request('buscar_exportar', null);
+        
+        if( $buscar != null )  {
+            $personas = Persona::where('nombre', 'like', '%'.$buscar.'%')
+                            ->orWhere('paterno', 'like', '%'.$buscar.'%')
+                            ->orWhere('materno', 'like', '%'.$buscar.'%')
+                            ->orWhere('dni', '=', request()->$buscar)
+                            ->get();
+        }
+        else {
+            $personas = Persona::get();
+        }
+
+        $pdf = \PDF::loadView(
+                                'pdf.personas.lista',
+                                [ 
+                                    'personas' => $personas, 
+                                    'cantidad' => $personas->count() 
+                                ]
+                            );
+
+        return $pdf->download(date('YmdHis').'.pdf');
+    }
 
 }

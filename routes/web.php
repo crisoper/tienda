@@ -39,5 +39,11 @@ Route::get('dbupdate', 'PersonaController@dbupdate');
 Route::get('personas/{persona}/subirfoto', 'PersonaController@subirfoto')->name('personas.subirfoto');
 Route::put('personas/{persona}/subirfoto', 'PersonaController@storesubirfoto')->name('personas.storesubirfoto');
 
+//Exportar Lista de Personas
+Route::post('/exportar/personas', 'PersonaController@exportar')->name('personas.exportar');
+
+//Exportar personas a PDF
+Route::post('/exportar/imprimirpdf', 'PersonaController@imprimirpdf')->name('personas.imprimir');
+
 // Subir archivos desde un formulario
 Route::post('/uploads', 'StorageController@save');

@@ -16,9 +16,7 @@
 </div>
 
 <div class="row">
-
     <div class="col-sm-12">
-
         <form action="{{ route('personas.storesubirfoto', $persona->id) }}" method="POST" enctype="multipart/form-data">
 
             <div class="form-row">
@@ -30,15 +28,11 @@
             </div>
             
             {!! method_field('PUT') !!}
-            
             {!! csrf_field() !!}
-
-
             <button type="submit" class="btn btn-info">Actualizar</button>
             <a href="{{ route('personas.index') }}" class="btn btn-danger">Cancelar</a>
         
         </form>
-        
     </div>
 </div>
 
