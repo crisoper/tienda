@@ -46,7 +46,7 @@
 
             <div class="table-responsive">
 
-                @if (count($personas) > 0)
+                @if (count($productos) > 0)
                     <table class="table table-sm table-striped">
                         <thead>
                             <tr>
